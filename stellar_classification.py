@@ -41,7 +41,11 @@ os.makedirs(OUTPUT_DIR, exist_ok=True)
 def load_or_generate_dataset(csv_path: str) -> pd.DataFrame:
     """Load CSV when present; otherwise synthesise a dataset with realistic SDSS-17 statistics."""
     if os.path.exists(csv_path):
-        return pd.read_csv(csv_path)
+        df = pd.read_csv(csv_path)
+        # The SDSS17 CSV sometimes ships with an empty header for the alpha (RA) column
+        if "Unnamed: 1" in df.columns:
+            df = df.rename(columns={"Unnamed: 1": "alpha"})
+        return df
 
     print(f"[INFO] '{csv_path}' not found – generating synthetic SDSS-17 dataset …")
     rng = np.random.default_rng(seed=42)
@@ -104,7 +108,7 @@ def preprocess(df: pd.DataFrame):
     imputer = SimpleImputer(strategy="median")
     df[mag_cols] = imputer.fit_transform(df[mag_cols])
     missing_after = df[mag_cols].isna().sum().sum()
-    print(f"  Missing values in photometric bands: {missing_before} → {missing_after} (median imputation)")
+    print(f"  Missing values in photometric bands: {missing_before} -> {missing_after} (median imputation)")
 
     # --- b) Feature engineering ---
     # FE-1: colour indices (magnitude differences) – standard in stellar astronomy
@@ -203,7 +207,7 @@ def evaluate(y_test, y_pred, model_name: str, class_names: list):
     fname = f"{OUTPUT_DIR}/confusion_matrix_{model_name.lower().replace(' ', '_')}.png"
     fig.savefig(fname, dpi=150)
     plt.close(fig)
-    print(f"  Confusion matrix saved → {fname}")
+    print(f"  Confusion matrix saved -> {fname}")
 
     return {"accuracy": acc, "precision": prec, "recall": rec, "f1": f1}
 
@@ -222,7 +226,7 @@ def plot_class_distribution(df: pd.DataFrame):
     path = f"{OUTPUT_DIR}/class_distribution.png"
     fig.savefig(path, dpi=150)
     plt.close(fig)
-    print(f"  Class distribution plot saved → {path}")
+    print(f"  Class distribution plot saved -> {path}")
 
 
 def plot_feature_importance(dt, feature_names: list):
@@ -237,7 +241,7 @@ def plot_feature_importance(dt, feature_names: list):
     path = f"{OUTPUT_DIR}/feature_importance_dt.png"
     fig.savefig(path, dpi=150)
     plt.close(fig)
-    print(f"  Feature importance plot saved → {path}")
+    print(f"  Feature importance plot saved -> {path}")
 
 
 def plot_metrics_comparison(lr_metrics: dict, dt_metrics: dict):
@@ -262,7 +266,7 @@ def plot_metrics_comparison(lr_metrics: dict, dt_metrics: dict):
     path = f"{OUTPUT_DIR}/metrics_comparison.png"
     fig.savefig(path, dpi=150)
     plt.close(fig)
-    print(f"  Metrics comparison plot saved → {path}")
+    print(f"  Metrics comparison plot saved -> {path}")
 
 
 def plot_colour_scatter(df: pd.DataFrame):
@@ -279,7 +283,7 @@ def plot_colour_scatter(df: pd.DataFrame):
     path = f"{OUTPUT_DIR}/colour_colour_diagram.png"
     fig.savefig(path, dpi=150)
     plt.close(fig)
-    print(f"  Colour-colour diagram saved → {path}")
+    print(f"  Colour-colour diagram saved -> {path}")
 
 
 # ─────────────────────────────────────────────
