@@ -136,7 +136,7 @@ Both classifiers achieve near-perfect identification of **STAR** objects, benefi
 
 | Class Distribution | Colour-Colour Diagram |
 |---|---|
-| ![Distribution](outputs/class_distribution.png) | ![Colour](outputs/colour_colour_diagram.png) |
+| ![Distribution](outputs/class_distribution.png) | ![Colour](outputs/color_color_diagram.png) |
 
 | Feature Importances (DT) | Model Comparison |
 |---|---|
