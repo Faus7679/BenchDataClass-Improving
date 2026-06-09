@@ -111,12 +111,12 @@ def preprocess(df: pd.DataFrame):
     print(f"  Missing values in photometric bands: {missing_before} -> {missing_after} (median imputation)")
 
     # --- b) Feature engineering ---
-    # FE-1: colour indices (magnitude differences) – standard in stellar astronomy
-    df["u_g"] = df["u"] - df["g"]   # ultra-violet to green colour
-    df["g_r"] = df["g"] - df["r"]   # green to red colour
+    # FE-1: color indices (magnitude differences) – standard in stellar astronomy
+    df["u_g"] = df["u"] - df["g"]   # ultra-violet to green color
+    df["g_r"] = df["g"] - df["r"]   # green to red color
     df["r_i"] = df["r"] - df["i"]
     df["i_z"] = df["i"] - df["z"]
-    print("  Feature engineering 1: colour indices u_g, g_r, r_i, i_z added")
+    print("  Feature engineering 1: color indices u_g, g_r, r_i, i_z added")
 
     # FE-2: log-transformed redshift (compresses the long tail)
     df["log_redshift"] = np.log1p(df["redshift"])
@@ -275,16 +275,15 @@ def plot_colour_scatter(df: pd.DataFrame):
     palette = {"GALAXY": "#4C72B0", "STAR": "#DD8452", "QSO": "#55A868"}
     for cls, grp in df.groupby("class"):
         ax.scatter(grp["u_g"], grp["g_r"], s=4, alpha=0.4, label=cls, color=palette.get(cls, "grey"))
-    ax.set_xlabel("u − g (colour index)")
-    ax.set_ylabel("g − r (colour index)")
-    ax.set_title("Colour-Colour Diagram by Class")
+    ax.set_xlabel("u − g (color index)")
+    ax.set_ylabel("g − r (color index)")
+    ax.set_title("Color-Color Diagram by Class")
     ax.legend(markerscale=3)
     plt.tight_layout()
-    path = f"{OUTPUT_DIR}/colour_colour_diagram.png"
+    path = f"{OUTPUT_DIR}/color_color_diagram.png"
     fig.savefig(path, dpi=150)
     plt.close(fig)
-    print(f"  Colour-colour diagram saved -> {path}")
-
+    print(f"  Color-color diagram saved -> {path}")
 
 # ─────────────────────────────────────────────
 # Main
